@@ -40,7 +40,11 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
 
     if (!reducedMotion) {
       const lenis = new Lenis({ duration: 1.2, smoothWheel: true });
-      lenis.on("scroll", ScrollTrigger.update);
+      lenis.on("scroll", (e: { velocity: number }) => {
+        ScrollTrigger.update();
+        // Normalized scroll speed feeds particle streak + chromatic shift.
+        useAppStore.getState().setScrollVelocity(Math.min(1, Math.abs(e.velocity) / 35));
+      });
       const raf = (time: number) => lenis.raf(time * 1000);
       gsap.ticker.add(raf);
       gsap.ticker.lagSmoothing(0);

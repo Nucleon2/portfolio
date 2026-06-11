@@ -19,23 +19,42 @@ import {
   ABYSS,
   ABYSS_COLOR,
   FOG_KEYFRAMES,
+  POINTER,
   SCENE_ACCENT,
   sampleAccent,
   sampleKeyframes,
 } from "@/lib/sceneConfig";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 const _fogTarget = new THREE.Color();
 
-/** Animates fog density + per-room tint and flags the scene ready for the preloader. */
+/** Animates fog density + per-room tint, tracks pointer energy, and flags the
+ *  scene ready for the preloader. */
 function SceneState() {
   const scene = useThree((s) => s.scene);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const id = requestAnimationFrame(() => useAppStore.getState().setSceneReady(true));
     return () => cancelAnimationFrame(id);
   }, []);
 
+  // Track the cursor in NDC and spike its energy on movement (skipped under
+  // reduced motion — no scene disturbance).
+  useEffect(() => {
+    if (reducedMotion) return;
+    const onMove = (e: PointerEvent) => {
+      POINTER.x = (e.clientX / window.innerWidth) * 2 - 1;
+      POINTER.y = -((e.clientY / window.innerHeight) * 2 - 1);
+      POINTER.energy = 1;
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [reducedMotion]);
+
   useFrame((_, dt) => {
+    POINTER.energy = THREE.MathUtils.damp(POINTER.energy, 0, 1.6, dt);
+
     const fog = scene.fog as THREE.FogExp2 | null;
     if (!fog) return;
     const progress = useAppStore.getState().progress;

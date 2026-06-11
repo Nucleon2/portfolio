@@ -112,6 +112,11 @@ const ACCENT_STOPS: ColorStop[] = (() => {
  *  reassigned, so no React re-renders and no per-frame allocation. */
 export const SCENE_ACCENT = new THREE.Color(BIO);
 
+/** Cursor position in NDC (-1..1) + an energy that ramps on movement and decays
+ *  when idle. Lets particle shaders scatter away from the pointer without the
+ *  scatter sticking to screen-center when the mouse is still. Shared scene-wide. */
+export const POINTER = { x: 0, y: 0, energy: 0 };
+
 /** Write the accent for a given global progress into `out`. */
 export function sampleAccent(t: number, out: THREE.Color): THREE.Color {
   if (t <= ACCENT_STOPS[0][0]) return out.copy(ACCENT_STOPS[0][1]);

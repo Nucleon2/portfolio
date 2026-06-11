@@ -1,6 +1,11 @@
+"use client";
+
 import { profile } from "@/data/profile";
+import { useAppStore } from "@/lib/store";
 
 export function Contact() {
+  const pulseCta = useAppStore((s) => s.pulseCta);
+
   return (
     <section
       id="contact"
@@ -21,6 +26,7 @@ export function Contact() {
         <a
           href={`mailto:${profile.email}`}
           data-magnetic
+          onClick={() => pulseCta()}
           className="rounded-full bg-bio px-8 py-4 text-sm font-medium uppercase tracking-[0.2em] text-abyss transition-shadow duration-300 hover:shadow-[0_0_30px_rgba(63,220,119,0.5)]"
         >
           Say hello

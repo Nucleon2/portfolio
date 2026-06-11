@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { firefliesVertex, firefliesFragment } from "../shaders/fireflies";
-import { mulberry32, sampleKeyframes, SCENE_ACCENT, BIO_BRIGHT } from "@/lib/sceneConfig";
+import { mulberry32, sampleKeyframes, POINTER, SCENE_ACCENT, BIO_BRIGHT } from "@/lib/sceneConfig";
 import { useAppStore } from "@/lib/store";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
@@ -55,22 +55,38 @@ export function Fireflies() {
       uPixelRatio: { value: 1 },
       uColor: { value: new THREE.Color(BIO_BRIGHT) },
       uIntensity: { value: 1 },
+      uPointer: { value: new THREE.Vector2(0, 0) },
+      uPointerStrength: { value: 0 },
+      uVelocity: { value: 0 },
     }),
     [],
   );
+
+  const vel = useRef(0);
 
   useFrame((state, dt) => {
     const mat = materialRef.current;
     if (!mat) return;
     mat.uniforms.uTime.value += dt * (reducedMotion ? 0.12 : 1);
     mat.uniforms.uPixelRatio.value = state.gl.getPixelRatio();
-    const { progress, quality } = useAppStore.getState();
-    mat.uniforms.uIntensity.value = sampleKeyframes(INTENSITY_FRAMES, progress);
+    const { progress, quality, scrollVelocity } = useAppStore.getState();
+
+    // Brighten the fireflies inside a project clearing — light pools where the
+    // content is (this also helps the text-over-scene contrast).
+    const inRoom = progress > 0.32 && progress < 0.78 ? 0.35 : 0;
+    mat.uniforms.uIntensity.value = sampleKeyframes(INTENSITY_FRAMES, progress) + inRoom;
+
     // Drift the firefly light toward the active room's accent, keeping enough
     // bio-bright base that they still read as fireflies, not colored dots.
     (mat.uniforms.uColor.value as THREE.Color)
       .copy(FIREFLY_BASE)
       .lerp(SCENE_ACCENT, 0.55);
+
+    (mat.uniforms.uPointer.value as THREE.Vector2).set(POINTER.x, POINTER.y);
+    mat.uniforms.uPointerStrength.value = POINTER.energy;
+    vel.current = THREE.MathUtils.damp(vel.current, scrollVelocity, 4, dt);
+    mat.uniforms.uVelocity.value = vel.current;
+
     const visible = Math.floor(BASE_COUNT * QUALITY_FACTOR[quality]);
     if (geometry.drawRange.count !== visible) geometry.setDrawRange(0, visible);
   });
