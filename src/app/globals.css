@@ -153,3 +153,23 @@ html.has-cursor * {
     0 1px 12px var(--color-abyss),
     0 0 24px rgba(4, 16, 10, 0.65);
 }
+
+/* Link underline that draws in from the left on hover. */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+}

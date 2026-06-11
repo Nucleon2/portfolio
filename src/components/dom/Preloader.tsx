@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useAppStore } from "@/lib/store";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import { profile } from "@/data/profile";
 
 const MIN_SHOW_MS = 1100;
@@ -11,10 +12,34 @@ const MIN_SHOW_MS = 1100;
 /** Branded loader; wipes away once the WebGL scene has its first frame. */
 export function Preloader() {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const countRef = useRef<HTMLSpanElement>(null);
+  const reducedMotion = useReducedMotion();
   const sceneReady = useAppStore((s) => s.sceneReady);
   const [gone, setGone] = useState(false);
   const [armed, setArmed] = useState(false);
   const mountedAt = useRef(0);
+
+  // Branded 0 -> 100 ignition counter while the forest compiles.
+  useGSAP(
+    () => {
+      const node = countRef.current;
+      if (!node) return;
+      if (reducedMotion) {
+        node.textContent = "100";
+        return;
+      }
+      const proxy = { v: 0 };
+      gsap.to(proxy, {
+        v: 100,
+        duration: 1.0,
+        ease: "power1.inOut",
+        onUpdate: () => {
+          node.textContent = String(Math.round(proxy.v)).padStart(2, "0");
+        },
+      });
+    },
+    { dependencies: [reducedMotion] },
+  );
 
   useEffect(() => {
     mountedAt.current = performance.now();
@@ -63,11 +88,12 @@ export function Preloader() {
           {profile.firstName}
           <span className="glow-text text-bio"> {profile.lastName}</span>
         </p>
-        <div className="flex items-center gap-2" aria-hidden="true">
-          <span className="preloader-dot h-1.5 w-1.5 rounded-full bg-bio" />
-          <span className="preloader-dot h-1.5 w-1.5 rounded-full bg-bio [animation-delay:0.2s]" />
-          <span className="preloader-dot h-1.5 w-1.5 rounded-full bg-bio [animation-delay:0.4s]" />
-        </div>
+        <p className="font-display flex items-baseline gap-1 text-bio" aria-hidden="true">
+          <span ref={countRef} className="glow-text text-5xl font-800 tabular-nums sm:text-6xl">
+            00
+          </span>
+          <span className="text-xl font-600 text-bio/60">%</span>
+        </p>
         <p className="text-[10px] uppercase tracking-[0.45em] text-mist">Entering the forest</p>
       </div>
     </div>
