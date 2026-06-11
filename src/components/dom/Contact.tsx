@@ -30,7 +30,7 @@ export function Contact() {
           target="_blank"
           rel="noopener noreferrer"
           data-magnetic
-          className="rounded-full border border-bio/50 px-8 py-4 text-sm uppercase tracking-[0.2em] text-bio transition-colors duration-300 hover:bg-bio hover:text-abyss"
+          className="rounded-full border border-ember/50 px-8 py-4 text-sm uppercase tracking-[0.2em] text-ember transition-colors duration-300 hover:bg-ember hover:text-abyss"
         >
           Resume ↓
         </a>

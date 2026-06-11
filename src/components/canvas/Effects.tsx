@@ -8,10 +8,10 @@ export function Effects() {
     <EffectComposer multisampling={0}>
       <Bloom
         mipmapBlur
-        intensity={1.15}
-        luminanceThreshold={0.3}
-        luminanceSmoothing={0.18}
-        radius={0.82}
+        intensity={0.82}
+        luminanceThreshold={0.42}
+        luminanceSmoothing={0.2}
+        radius={0.8}
       />
       {quality === "high" ? <Noise opacity={0.05} /> : <></>}
       {quality !== "low" ? <Vignette eskil={false} offset={0.22} darkness={0.85} /> : <></>}

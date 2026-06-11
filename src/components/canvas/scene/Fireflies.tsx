@@ -2,11 +2,12 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { firefliesVertex, firefliesFragment } from "../shaders/fireflies";
-import { mulberry32, sampleKeyframes, BIO_BRIGHT } from "@/lib/sceneConfig";
+import { mulberry32, sampleKeyframes, SCENE_ACCENT, BIO_BRIGHT } from "@/lib/sceneConfig";
 import { useAppStore } from "@/lib/store";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
 const BASE_COUNT = 2400;
+const FIREFLY_BASE = new THREE.Color(BIO_BRIGHT);
 const QUALITY_FACTOR = { high: 1, medium: 0.6, low: 0.35 } as const;
 
 /** Firefly density over the journey — thickest at the hero, calm at the end. */
@@ -65,6 +66,11 @@ export function Fireflies() {
     mat.uniforms.uPixelRatio.value = state.gl.getPixelRatio();
     const { progress, quality } = useAppStore.getState();
     mat.uniforms.uIntensity.value = sampleKeyframes(INTENSITY_FRAMES, progress);
+    // Drift the firefly light toward the active room's accent, keeping enough
+    // bio-bright base that they still read as fireflies, not colored dots.
+    (mat.uniforms.uColor.value as THREE.Color)
+      .copy(FIREFLY_BASE)
+      .lerp(SCENE_ACCENT, 0.55);
     const visible = Math.floor(BASE_COUNT * QUALITY_FACTOR[quality]);
     if (geometry.drawRange.count !== visible) geometry.setDrawRange(0, visible);
   });

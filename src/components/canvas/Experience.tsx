@@ -15,9 +15,18 @@ import { Spores } from "./scene/Spores";
 import { LightShafts } from "./scene/LightShafts";
 import { HorizonGlow } from "./scene/HorizonGlow";
 import { useAppStore } from "@/lib/store";
-import { ABYSS, FOG_KEYFRAMES, sampleKeyframes } from "@/lib/sceneConfig";
+import {
+  ABYSS,
+  ABYSS_COLOR,
+  FOG_KEYFRAMES,
+  SCENE_ACCENT,
+  sampleAccent,
+  sampleKeyframes,
+} from "@/lib/sceneConfig";
 
-/** Animates fog density per section and flags the scene ready for the preloader. */
+const _fogTarget = new THREE.Color();
+
+/** Animates fog density + per-room tint and flags the scene ready for the preloader. */
 function SceneState() {
   const scene = useThree((s) => s.scene);
 
@@ -30,8 +39,15 @@ function SceneState() {
     const fog = scene.fog as THREE.FogExp2 | null;
     if (!fog) return;
     const progress = useAppStore.getState().progress;
-    const target = sampleKeyframes(FOG_KEYFRAMES, progress);
-    fog.density = THREE.MathUtils.damp(fog.density, target, 2.5, dt);
+
+    const density = sampleKeyframes(FOG_KEYFRAMES, progress);
+    fog.density = THREE.MathUtils.damp(fog.density, density, 2.5, dt);
+
+    // Per-project "rooms": shift the accent and bleed a little of it into the
+    // fog so each clearing feels like its own color of light.
+    sampleAccent(progress, SCENE_ACCENT);
+    _fogTarget.copy(ABYSS_COLOR).lerp(SCENE_ACCENT, 0.11);
+    fog.color.lerp(_fogTarget, 1 - Math.exp(-3 * dt));
   });
 
   return null;

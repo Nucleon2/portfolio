@@ -9,6 +9,10 @@
   --color-spore: #b8ffd9;
   --color-mist: #9db8a8;
 
+  /* Warm secondary accent — used sparingly (résumé, key hovers) so two
+     colors read as "designed" rather than one green filter. */
+  --color-ember: #f5c451;
+
   --font-display: var(--font-unbounded);
   --font-body: var(--font-space-grotesk);
 }
