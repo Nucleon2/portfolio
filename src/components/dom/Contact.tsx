@@ -48,7 +48,7 @@ export function Contact() {
             href={profile.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="link-underline transition-colors hover:text-bio-bright"
+            className="link-underline inline-block py-2 transition-colors hover:text-bio-bright"
           >
             GitHub — {profile.githubHandle}
           </a>
@@ -58,7 +58,7 @@ export function Contact() {
             href={profile.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="link-underline transition-colors hover:text-bio-bright"
+            className="link-underline inline-block py-2 transition-colors hover:text-bio-bright"
           >
             LinkedIn — {profile.linkedinHandle}
           </a>

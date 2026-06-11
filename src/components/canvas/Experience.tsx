@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { PerformanceMonitor } from "@react-three/drei";
@@ -93,8 +93,18 @@ function PerfGovernor() {
 }
 
 export default function Experience() {
+  // Pause the whole render loop while the tab is hidden — no point burning GPU
+  // (and battery) animating a forest nobody is looking at.
+  const [hidden, setHidden] = useState(false);
+  useEffect(() => {
+    const onVisibility = () => setHidden(document.hidden);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
+
   return (
     <Canvas
+      frameloop={hidden ? "never" : "always"}
       dpr={[1, 1.5]}
       camera={{ fov: 55, near: 0.1, far: 150, position: [0, 1.4, 10] }}
       gl={{ antialias: false, powerPreference: "high-performance" }}
