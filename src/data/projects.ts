@@ -8,6 +8,14 @@ export type Project = {
   highlights: string[];
   tech: string[];
   github: string;
+  /** Live demo / deployed URL, if one exists. Renders a "Live" button. */
+  liveUrl?: string;
+  /**
+   * Hero visual for the project. Drop a file at /public/projects/<id>.png|.webm
+   * and point `src` at it. When unset, ProjectVisual renders a designed
+   * placeholder mockup so the panel never looks empty.
+   */
+  media?: { type: "image" | "video"; src: string };
   /** Emissive tint of this project's mushroom clearing in the 3D scene */
   tint: string;
   badge?: string;
