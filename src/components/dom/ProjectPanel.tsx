@@ -10,7 +10,7 @@ export function ProjectPanel({ project }: { project: Project }) {
       <span
         aria-hidden="true"
         data-project-numeral
-        className="font-display pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 select-none text-[38vw] font-800 leading-none text-moss/25 sm:text-[26vw]"
+        className="font-display pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 select-none text-[38vw] font-800 leading-none text-fern/55 sm:text-[26vw]"
       >
         {project.index}
       </span>

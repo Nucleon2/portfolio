@@ -42,6 +42,13 @@ body {
   color: var(--color-abyss);
 }
 
+/* Custom firefly cursor active — hide the native pointer everywhere.
+   Only set on fine-pointer devices by the Cursor component. */
+html.has-cursor,
+html.has-cursor * {
+  cursor: none !important;
+}
+
 /* CSS fallback atmosphere behind the WebGL canvas — visible if WebGL fails
    and during canvas warm-up, so the site never looks broken. */
 .atmosphere-fallback {

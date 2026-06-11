@@ -1,6 +1,7 @@
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { CanvasRoot } from "@/components/canvas/CanvasRoot";
 import { DomAnimations } from "@/components/dom/DomAnimations";
+import { Cursor } from "@/components/dom/Cursor";
 import { Preloader } from "@/components/dom/Preloader";
 import { Nav } from "@/components/dom/Nav";
 import { Hero } from "@/components/dom/Hero";
@@ -19,6 +20,7 @@ export default function Home() {
       </div>
 
       <Preloader />
+      <Cursor />
       <DomAnimations />
       <Nav />
 
