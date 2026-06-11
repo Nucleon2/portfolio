@@ -17,7 +17,7 @@ export function WorkExperience() {
             style={{ height: "100%" }}
             aria-hidden="true"
           />
-          <header className="mb-8">
+          <header className="text-haloed mb-8">
             <h3 className="font-display text-2xl font-600 text-spore sm:text-4xl">
               {job.company}
             </h3>

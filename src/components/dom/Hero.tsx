@@ -8,7 +8,7 @@ export function Hero() {
     >
       <p
         data-hero-kicker
-        className="mb-6 text-xs uppercase tracking-[0.5em] text-mist sm:text-sm"
+        className="text-haloed mb-6 text-xs uppercase tracking-[0.5em] text-mist sm:text-sm"
       >
         {profile.tagline} — {profile.location}
       </p>
@@ -19,7 +19,7 @@ export function Hero() {
         <span className="block">{profile.firstName}</span>
         <span className="glow-text block text-bio">{profile.lastName}</span>
       </h1>
-      <p data-hero-sub className="mt-8 max-w-md text-sm text-mist sm:text-base">
+      <p data-hero-sub className="text-haloed mt-8 max-w-md text-sm text-spore/80 sm:text-base">
         Building full-stack and AI-powered products from the ground up.
       </p>
 

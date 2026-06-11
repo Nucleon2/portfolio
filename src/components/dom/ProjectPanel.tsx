@@ -15,7 +15,7 @@ export function ProjectPanel({ project }: { project: Project }) {
         {project.index}
       </span>
 
-      <div className="relative z-10 mx-auto w-full max-w-5xl">
+      <div className="text-scrim relative z-10 mx-auto w-full max-w-5xl">
         {project.badge && (
           <span
             data-project-meta
@@ -30,10 +30,10 @@ export function ProjectPanel({ project }: { project: Project }) {
         >
           {project.name}
         </h3>
-        <p data-project-meta className="mt-5 max-w-xl text-lg text-bio-bright sm:text-xl">
+        <p data-project-meta className="text-haloed mt-5 max-w-xl text-lg text-bio-bright sm:text-xl">
           {project.pitch}
         </p>
-        <p data-project-meta className="mt-4 max-w-xl text-sm leading-relaxed text-mist sm:text-base">
+        <p data-project-meta className="text-haloed mt-4 max-w-xl text-sm leading-relaxed text-spore/85 sm:text-base">
           {project.description}
         </p>
 

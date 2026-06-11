@@ -13,7 +13,7 @@ export function Contact() {
         Let&apos;s build
         <span className="glow-text block text-bio">something.</span>
       </h2>
-      <p className="mt-8 max-w-md text-sm text-mist sm:text-base">
+      <p className="text-haloed mt-8 max-w-md text-sm text-spore/85 sm:text-base">
         Open to internships, collaborations and interesting problems.
       </p>
 
