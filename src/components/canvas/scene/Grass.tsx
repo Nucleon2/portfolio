@@ -10,8 +10,9 @@ const QUALITY_FACTOR = { high: 1, medium: 0.6, low: 0.35 } as const;
 
 export function Grass() {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const quality = useAppStore((s) => s.quality);
-  const count = Math.floor(BASE_COUNT * QUALITY_FACTOR[quality]);
+  // Always build the full set; quality tiers shrink the rendered count via
+  // mesh.count — rebuilding the geometry mid-scroll causes visible hitches.
+  const count = BASE_COUNT;
 
   const mesh = useMemo(() => {
     const blade = new THREE.PlaneGeometry(0.07, 0.55, 1, 3);
@@ -63,6 +64,8 @@ export function Grass() {
 
   useFrame((_, dt) => {
     (mesh.material as THREE.ShaderMaterial).uniforms.uTime.value += dt;
+    const visible = Math.floor(BASE_COUNT * QUALITY_FACTOR[useAppStore.getState().quality]);
+    if (mesh.count !== visible) mesh.count = visible;
   });
 
   materialRef.current = mesh.material as THREE.ShaderMaterial;

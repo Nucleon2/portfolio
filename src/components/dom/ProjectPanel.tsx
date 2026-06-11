@@ -42,7 +42,7 @@ export function ProjectPanel({ project }: { project: Project }) {
             <li
               key={highlight.slice(0, 24)}
               data-project-meta
-              className="rounded-md border border-moss/60 bg-abyss/50 px-4 py-3 text-xs leading-relaxed text-spore/85 backdrop-blur-sm sm:text-sm"
+              className="rounded-md border border-moss/60 bg-abyss/75 px-4 py-3 text-xs leading-relaxed text-spore/85 sm:text-sm"
             >
               {highlight}
             </li>

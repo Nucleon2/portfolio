@@ -31,7 +31,7 @@ export function WorkExperience() {
               <li
                 key={bullet.slice(0, 24)}
                 data-xp-card
-                className="rounded-lg border border-moss/60 bg-abyss/60 p-5 text-sm leading-relaxed text-spore/90 backdrop-blur-sm sm:text-base"
+                className="rounded-lg border border-moss/60 bg-abyss/80 p-5 text-sm leading-relaxed text-spore/90 sm:text-base"
               >
                 {bullet}
               </li>

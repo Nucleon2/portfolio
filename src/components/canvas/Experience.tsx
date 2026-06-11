@@ -60,7 +60,7 @@ function PerfGovernor() {
 export default function Experience() {
   return (
     <Canvas
-      dpr={[1, 1.75]}
+      dpr={[1, 1.5]}
       camera={{ fov: 55, near: 0.1, far: 150, position: [0, 1.4, 10] }}
       gl={{ antialias: false, powerPreference: "high-performance" }}
       style={{ pointerEvents: "none" }}

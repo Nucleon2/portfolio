@@ -1,7 +1,7 @@
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { damp } from "maath/easing";
+import { damp, damp3 } from "maath/easing";
 import { CAMERA_POINTS, LOOKAT_POINTS } from "@/lib/sceneConfig";
 import { useAppStore } from "@/lib/store";
 
@@ -22,6 +22,8 @@ export function CameraRig() {
 
   const smoothed = useRef({ p: 0 });
   const lookTarget = useRef(new THREE.Vector3());
+  const parallax = useRef(new THREE.Vector3());
+  const parallaxTarget = useRef(new THREE.Vector3());
 
   useFrame((state, dt) => {
     const target = useAppStore.getState().progress;
@@ -31,9 +33,11 @@ export function CameraRig() {
     positionCurve.getPointAt(p, state.camera.position);
     lookCurve.getPointAt(p, lookTarget.current);
 
-    // Subtle pointer parallax so the forest feels alive under the cursor.
-    state.camera.position.x += state.pointer.x * 0.35;
-    state.camera.position.y += state.pointer.y * 0.18;
+    // Subtle pointer parallax, heavily damped — raw pointer values would
+    // snap the camera around on every fast mouse move.
+    parallaxTarget.current.set(state.pointer.x * 0.3, state.pointer.y * 0.15, 0);
+    damp3(parallax.current, parallaxTarget.current, 0.6, dt);
+    state.camera.position.add(parallax.current);
 
     state.camera.lookAt(lookTarget.current);
   });

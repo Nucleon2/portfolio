@@ -20,9 +20,9 @@ const INTENSITY_FRAMES: [number, number][] = [
 /** Slow, dim drifting motes — same shader as fireflies, gentler settings. */
 export function Spores() {
   const materialRef = useRef<THREE.ShaderMaterial>(null);
-  const quality = useAppStore((s) => s.quality);
   const reducedMotion = useReducedMotion();
-  const count = Math.floor(BASE_COUNT * QUALITY_FACTOR[quality]);
+  // Full buffer once; quality tiers shrink the draw range (no rebuild hitch).
+  const count = BASE_COUNT;
 
   const geometry = useMemo(() => {
     const rng = mulberry32(31415);
@@ -63,8 +63,10 @@ export function Spores() {
     if (!mat) return;
     mat.uniforms.uTime.value += dt * (reducedMotion ? 0.08 : 0.45);
     mat.uniforms.uPixelRatio.value = state.gl.getPixelRatio();
-    const progress = useAppStore.getState().progress;
+    const { progress, quality } = useAppStore.getState();
     mat.uniforms.uIntensity.value = sampleKeyframes(INTENSITY_FRAMES, progress);
+    const visible = Math.floor(BASE_COUNT * QUALITY_FACTOR[quality]);
+    if (geometry.drawRange.count !== visible) geometry.setDrawRange(0, visible);
   });
 
   return (
