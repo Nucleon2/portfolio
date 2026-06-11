@@ -20,7 +20,7 @@ export function Hero() {
         <span className="glow-text block text-bio">{profile.lastName}</span>
       </h1>
       <p data-hero-sub className="text-haloed mt-8 max-w-md text-sm text-spore/80 sm:text-base">
-        Building full-stack and AI-powered products from the ground up.
+        I build full-stack and AI products from the ground up — and ship them.
       </p>
 
       <div

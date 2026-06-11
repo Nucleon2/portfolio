@@ -2,6 +2,7 @@
 
 import { useAppStore } from "@/lib/store";
 import { sections } from "@/lib/sections";
+import { profile } from "@/data/profile";
 
 export function Nav() {
   const sectionIndex = useAppStore((s) => s.sectionIndex);
@@ -16,7 +17,18 @@ export function Nav() {
         AK<span className="text-bio">.</span>
       </a>
 
-      <nav aria-label="Sections" className="pointer-events-auto">
+      <div className="flex items-center gap-5 sm:gap-7">
+        <a
+          href={profile.resumeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor-label="↗"
+          className="pointer-events-auto rounded-full border border-ember/40 px-3.5 py-1.5 text-[10px] uppercase tracking-[0.2em] text-ember transition-colors duration-300 hover:bg-ember hover:text-abyss sm:text-[11px]"
+        >
+          Résumé
+        </a>
+
+        <nav aria-label="Sections" className="pointer-events-auto">
         <ul className="flex items-center gap-4 sm:gap-5">
           {sections.map((section, i) => (
             <li key={section.id}>
@@ -43,7 +55,8 @@ export function Nav() {
             </li>
           ))}
         </ul>
-      </nav>
+        </nav>
+      </div>
     </header>
   );
 }
