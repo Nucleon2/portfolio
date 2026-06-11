@@ -37,6 +37,7 @@ export const projects: Project[] = [
     ],
     tech: ["React", "TypeScript", "Express", "PostgreSQL", "Drizzle", "Docker", "Tailwind"],
     github: "https://github.com/Abdullah73k/Rentra",
+    media: { type: "image", src: "/projects/rentra.png" },
     tint: "#3fdc77", // forest green — home base
     badge: "Open source",
   },
@@ -55,6 +56,7 @@ export const projects: Project[] = [
     ],
     tech: ["TypeScript", "Bun", "ElysiaJS", "React", "PostgreSQL", "DeepSeek", "Discord.js"],
     github: "https://github.com/Nucleon2/EthosAI",
+    media: { type: "image", src: "/projects/ethosai.png" },
     tint: "#22d3ee", // cyan — on-chain / blockchain
     badge: "AI × Blockchain",
   },
@@ -73,6 +75,7 @@ export const projects: Project[] = [
     ],
     tech: ["Next.js", "TypeScript", "Solana Web3.js", "Claude", "Jupiter", "Tailwind"],
     github: "https://github.com/Nucleon2/AI-hackfest-AI-agent-wallet",
+    media: { type: "image", src: "/projects/solace.png" },
     tint: "#9945ff", // Solana purple
     badge: "MLH AI Hackfest",
   },
@@ -91,6 +94,7 @@ export const projects: Project[] = [
     ],
     tech: ["React", "TypeScript", "Three.js", "R3F", "FastAPI", "Python", "DeepSeek"],
     github: "https://github.com/Nucleon2/EcoSim-GenAI-hackathon",
+    media: { type: "image", src: "/projects/ecosim.png" },
     tint: "#fbbf24", // sunrise amber — climate
     badge: "GenAI Hackathon",
   },
@@ -109,6 +113,7 @@ export const projects: Project[] = [
     ],
     tech: ["Python", "XGBoost", "scikit-learn", "Pandas", "NumPy", "Matplotlib"],
     github: "https://github.com/Nucleon2/wallet-scam-detector-ML",
+    media: { type: "image", src: "/projects/wallet-risk.png" },
     tint: "#f43f5e", // rose — risk / danger
     badge: "Machine Learning",
   },
