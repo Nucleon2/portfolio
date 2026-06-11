@@ -95,12 +95,21 @@ export function ProjectVisual({ project }: { project: Project }) {
           </span>
         </div>
 
-        {/* Screen */}
-        <div className="relative aspect-[16/10] w-full">
+        {/* Screen — matches the media's own aspect ratio so nothing is cropped;
+            falls back to 16:10 for the placeholder. */}
+        <div
+          className="relative w-full"
+          style={{
+            aspectRatio:
+              project.media?.width && project.media?.height
+                ? `${project.media.width} / ${project.media.height}`
+                : "16 / 10",
+          }}
+        >
           {project.media ? (
             project.media.type === "video" ? (
               <video
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-contain"
                 src={project.media.src}
                 autoPlay
                 muted
@@ -109,7 +118,7 @@ export function ProjectVisual({ project }: { project: Project }) {
               />
             ) : (
               <Image
-                className="object-cover"
+                className="object-contain"
                 src={project.media.src}
                 alt={`${project.name} preview`}
                 fill
