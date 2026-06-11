@@ -23,6 +23,11 @@ export function Skills() {
   const [edges, setEdges] = useState<Edge[]>([]);
   const [edgeIdx, setEdgeIdx] = useState<[number, number][]>([]);
 
+  // Inline callback refs fire every commit, so clear the arrays here to drop
+  // any nodes that no longer exist before they repopulate.
+  chipsRef.current = [];
+  lineRefs.current = [];
+
   // Measure chip centers (relative to the container) and build nearest-neighbor
   // edges. Run after layout and on resize; transforms are identity at rest.
   const measure = useCallback(() => {
@@ -55,10 +60,14 @@ export function Skills() {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
     const id = requestAnimationFrame(measure);
     window.addEventListener("resize", measure);
-    document.fonts?.ready.then(measure);
+    document.fonts?.ready.then(() => {
+      if (!cancelled) measure();
+    });
     return () => {
+      cancelled = true;
       cancelAnimationFrame(id);
       window.removeEventListener("resize", measure);
     };

@@ -109,8 +109,10 @@ export function Cursor() {
     window.addEventListener("pointerout", onOut, { passive: true });
     window.addEventListener("pointerdown", onDown, { passive: true });
     window.addEventListener("pointerup", onUp, { passive: true });
-    document.addEventListener("pointerleave", onLeaveWindow);
-    document.addEventListener("pointerenter", onEnterWindow);
+    // mouseleave/enter on <html> reliably fire when the pointer exits/enters
+    // the viewport (pointerleave on document does not).
+    document.documentElement.addEventListener("mouseleave", onLeaveWindow);
+    document.documentElement.addEventListener("mouseenter", onEnterWindow);
 
     return () => {
       document.documentElement.classList.remove("has-cursor");
@@ -119,8 +121,8 @@ export function Cursor() {
       window.removeEventListener("pointerout", onOut);
       window.removeEventListener("pointerdown", onDown);
       window.removeEventListener("pointerup", onUp);
-      document.removeEventListener("pointerleave", onLeaveWindow);
-      document.removeEventListener("pointerenter", onEnterWindow);
+      document.documentElement.removeEventListener("mouseleave", onLeaveWindow);
+      document.documentElement.removeEventListener("mouseenter", onEnterWindow);
     };
   }, [enabled, reducedMotion]);
 
