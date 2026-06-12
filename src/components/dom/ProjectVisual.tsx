@@ -74,9 +74,16 @@ export function ProjectVisual({ project }: { project: Project }) {
       style={{ perspective: "1200px" }}
       aria-hidden="true"
     >
+      {/* Accent halo — the screen "emits" its project tint into the forest,
+          tying the floating panel to the scene's per-project lighting. */}
+      <div
+        className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] opacity-70 blur-2xl"
+        style={{ background: `radial-gradient(ellipse at 50% 40%, ${tint}33, transparent 70%)` }}
+      />
+
       <div
         ref={cardRef}
-        className="relative overflow-hidden rounded-xl border bg-abyss/90 shadow-2xl will-change-transform"
+        className="relative z-10 overflow-hidden rounded-xl border bg-abyss/90 shadow-2xl will-change-transform"
         style={{
           borderColor: `${tint}55`,
           boxShadow: `0 0 0 1px ${tint}22, 0 18px 60px -12px ${tint}40, 0 0 90px -30px ${tint}66`,
@@ -129,6 +136,20 @@ export function ProjectVisual({ project }: { project: Project }) {
             <Placeholder project={project} />
           )}
 
+          {/* In-screen grade — a whisper of the project tint plus a vignette so
+              bright product UIs sit inside the forest instead of glaring out of
+              it. Kept low-opacity (soft-light) so the actual UI stays legible. */}
+          <div
+            className="pointer-events-none absolute inset-0 mix-blend-soft-light"
+            style={{
+              background: `linear-gradient(150deg, ${tint}40, transparent 45%), radial-gradient(ellipse at 50% 120%, ${tint}33, transparent 60%)`,
+            }}
+          />
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{ boxShadow: `inset 0 0 70px -18px rgba(4,16,10,0.9)` }}
+          />
+
           {/* Cursor-following glare */}
           <div
             ref={glareRef}
@@ -139,6 +160,13 @@ export function ProjectVisual({ project }: { project: Project }) {
           />
         </div>
       </div>
+
+      {/* Reflection pool — a soft mirror of the screen's light on the forest
+          floor below, selling the "screen floating in the world" read. */}
+      <div
+        className="pointer-events-none mx-auto h-10 w-3/4 -translate-y-2 rounded-[50%] opacity-60 blur-xl"
+        style={{ background: `radial-gradient(ellipse at 50% 0%, ${tint}55, transparent 70%)` }}
+      />
     </div>
   );
 }

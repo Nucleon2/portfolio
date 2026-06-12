@@ -115,16 +115,17 @@ export function DomAnimations() {
         }
       });
 
-      // ---- Skills: chips swarm in like spores
-      gsap.from("[data-skill-chip]", {
-        autoAlpha: 0,
-        y: 26,
-        scale: 0.85,
-        stagger: { each: 0.035, from: "random" },
-        duration: 0.6,
-        ease: "back.out(1.7)",
-        scrollTrigger: { trigger: "#skills", start: "top 60%" },
-      });
+      // ---- Skills: stars ignite into the constellation
+      if (document.querySelector("[data-skill-star]")) {
+        gsap.from("[data-skill-star]", {
+          autoAlpha: 0,
+          scale: 0.6,
+          stagger: { each: 0.03, from: "random" },
+          duration: 0.7,
+          ease: "back.out(1.7)",
+          scrollTrigger: { trigger: "#skills", start: "top 60%" },
+        });
+      }
 
       // ---- Contact: headline rises above the treeline
       const contactTitle = document.querySelector("[data-contact-title]");

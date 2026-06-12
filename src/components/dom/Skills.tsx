@@ -1,40 +1,55 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { skillGroups } from "@/data/skills";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { skills, skillGroups, categoryColor, type Skill } from "@/data/skills";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
 type Edge = { x1: number; y1: number; x2: number; y2: number };
 
-const PROXIMITY = 170; // px radius the cursor "pulls" chips into brightness
-const MAX_EDGE = 230; // don't connect chips farther apart than this
+const PROXIMITY = 180; // px radius the cursor "pulls" stars into brightness
+const MAX_EDGE = 250; // don't connect stars farther apart than this
+
+/** "#rrggbb" → "r, g, b" for rgba() interpolation. */
+function rgb(hex: string): string {
+  const n = parseInt(hex.slice(1), 16);
+  return `${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}`;
+}
+
+/** Star size by proficiency. Brighter, larger = stronger fluency. */
+function dotPx(level: Skill["level"]): number {
+  return level === 3 ? 9 : level === 2 ? 6 : 4;
+}
 
 /**
- * Skills as a living constellation: chips are stars, connected by faint
- * bioluminescent lines. The cursor brightens nearby stars and the threads
- * between them — the section reacts instead of sitting as a dead list.
+ * Skills as a living constellation: each skill is a star placed on a hand-tuned
+ * star-map (see skills.ts), sized and lit by proficiency and tinted by cluster.
+ * Faint bioluminescent threads connect nearest neighbours and draw themselves in
+ * when the section scrolls into view; the cursor then brightens nearby stars and
+ * the threads between them. Degrades to a clean grouped list on touch / mobile.
  */
 export function Skills() {
   const reducedMotion = useReducedMotion();
   const containerRef = useRef<HTMLDivElement>(null);
-  const chipsRef = useRef<HTMLLIElement[]>([]);
+  const starsRef = useRef<HTMLButtonElement[]>([]);
   const centersRef = useRef<{ x: number; y: number }[]>([]);
   const lineRefs = useRef<SVGLineElement[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [edgeIdx, setEdgeIdx] = useState<[number, number][]>([]);
+  const [revealed, setRevealed] = useState(false);
 
-  // Inline callback refs fire every commit, so clear the arrays here to drop
-  // any nodes that no longer exist before they repopulate.
-  chipsRef.current = [];
+  const colors = useMemo(() => skills.map((s) => rgb(categoryColor[s.category])), []);
+
+  // Inline callback refs fire every commit; clear here so stale nodes drop out.
+  starsRef.current = [];
   lineRefs.current = [];
 
-  // Measure chip centers (relative to the container) and build nearest-neighbor
-  // edges. Run after layout and on resize; transforms are identity at rest.
+  // Measure star centres (relative to the container) and build nearest-neighbour
+  // edges. Runs after layout and on resize; scale transforms are identity at rest.
   const measure = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
     const base = container.getBoundingClientRect();
-    const centers = chipsRef.current.map((el) => {
+    const centers = starsRef.current.map((el) => {
       const r = el.getBoundingClientRect();
       return { x: r.left - base.left + r.width / 2, y: r.top - base.top + r.height / 2 };
     });
@@ -47,7 +62,7 @@ export function Skills() {
         .map((o, j) => ({ j, d: Math.hypot(o.x - c.x, o.y - c.y) }))
         .filter((o) => o.j !== i && o.d <= MAX_EDGE)
         .sort((a, b) => a.d - b.d)
-        .slice(0, 2);
+        .slice(0, 3);
       near.forEach(({ j }) => {
         const key = i < j ? `${i}-${j}` : `${j}-${i}`;
         if (seen.has(key)) return;
@@ -73,7 +88,25 @@ export function Skills() {
     };
   }, [measure]);
 
-  // Cursor proximity: brighten/scale nearby chips and the threads between them.
+  // Draw the threads in once the constellation scrolls into view. Under reduced
+  // motion the CSS already forces the threads fully drawn, so no reveal is needed.
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setRevealed(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.25 },
+    );
+    io.observe(container);
+    return () => io.disconnect();
+  }, []);
+
+  // Cursor proximity: brighten/scale nearby stars and the threads between them.
   useEffect(() => {
     if (reducedMotion) return;
     const container = containerRef.current;
@@ -85,14 +118,15 @@ export function Skills() {
       const my = e.clientY - base.top;
       const centers = centersRef.current;
 
-      chipsRef.current.forEach((el, i) => {
+      starsRef.current.forEach((el, i) => {
         const c = centers[i];
         if (!c) return;
         const t = Math.max(0, 1 - Math.hypot(c.x - mx, c.y - my) / PROXIMITY);
-        el.style.transform = `scale(${1 + t * 0.22})`;
-        el.style.borderColor = t > 0.02 ? `rgba(125,255,176,${0.25 + t * 0.65})` : "";
-        el.style.color = t > 0.02 ? `rgb(${184 + t * 71},255,${217 + t * 38})` : "";
-        el.style.boxShadow = t > 0.05 ? `0 0 ${10 + t * 22}px rgba(63,220,119,${t * 0.4})` : "";
+        const col = colors[i];
+        el.style.transform = `scale(${1 + t * 0.26})`;
+        el.style.borderColor = `rgba(${col}, ${0.22 + t * 0.7})`;
+        el.style.color = t > 0.04 ? `rgb(${col})` : "";
+        el.style.boxShadow = t > 0.04 ? `0 0 ${10 + t * 26}px rgba(${col}, ${t * 0.5})` : "";
       });
 
       lineRefs.current.forEach((line, k) => {
@@ -100,20 +134,18 @@ export function Skills() {
         const ca = centers[a];
         const cb = centers[b];
         if (!ca || !cb) return;
-        const midx = (ca.x + cb.x) / 2;
-        const midy = (ca.y + cb.y) / 2;
-        const t = Math.max(0, 1 - Math.hypot(midx - mx, midy - my) / PROXIMITY);
-        line.style.opacity = String(0.08 + t * 0.6);
+        const t = Math.max(0, 1 - Math.hypot((ca.x + cb.x) / 2 - mx, (ca.y + cb.y) / 2 - my) / PROXIMITY);
+        line.style.opacity = String(0.16 + t * 0.6);
       });
     };
     const onLeave = () => {
-      chipsRef.current.forEach((el) => {
+      starsRef.current.forEach((el) => {
         el.style.transform = "";
         el.style.borderColor = "";
         el.style.color = "";
         el.style.boxShadow = "";
       });
-      lineRefs.current.forEach((line) => (line.style.opacity = "0.08"));
+      lineRefs.current.forEach((line) => (line.style.opacity = "0.16"));
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
@@ -122,25 +154,36 @@ export function Skills() {
       window.removeEventListener("pointermove", onMove);
       container.removeEventListener("pointerleave", onLeave);
     };
-  }, [reducedMotion, edgeIdx]);
-
-  let chipCursor = 0;
+  }, [reducedMotion, edgeIdx, colors]);
 
   return (
     <section
       id="skills"
       data-testid="section-skills"
-      className="relative mx-auto flex min-h-screen max-w-4xl flex-col justify-center px-6 py-32"
+      className="relative mx-auto flex min-h-screen max-w-5xl flex-col justify-center px-6 py-32"
     >
-      <h2 className="font-display mb-3 text-xs font-400 uppercase tracking-[0.5em] text-bio">
-        Skills
-      </h2>
-      <p className="text-haloed mb-12 max-w-md text-sm text-mist">
-        The toolkit behind the work — hover to light up the constellation.
+      <h2 className="font-display mb-3 text-xs font-400 uppercase tracking-[0.5em] text-bio">Skills</h2>
+      <p className="text-haloed mb-3 max-w-md text-sm text-mist">
+        The toolkit behind the work<span className="hidden md:inline"> — hover to light up the constellation</span>.
+      </p>
+      <p className="text-haloed mb-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.18em] text-mist/70">
+        <span className="inline-flex items-center gap-2">
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-spore shadow-[0_0_10px_2px_rgba(184,255,217,0.7)]" />
+          Core fluency
+        </span>
+        <span className="inline-flex items-center gap-2">
+          <span className="inline-block h-1.5 w-1.5 rounded-full bg-mist" />
+          Working knowledge
+        </span>
       </p>
 
-      <div ref={containerRef} className="relative">
-        {/* Constellation threads */}
+      {/* ── Desktop: the star-map ───────────────────────────────────────── */}
+      <div
+        ref={containerRef}
+        className="relative hidden aspect-[16/9] w-full md:block"
+        data-revealed={revealed}
+      >
+        {/* Constellation threads — draw in on reveal, then react to the cursor. */}
         <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" aria-hidden="true">
           {edges.map((e, i) => (
             <line
@@ -154,35 +197,92 @@ export function Skills() {
               y2={e.y2}
               stroke="var(--color-bio)"
               strokeWidth={1}
-              style={{ opacity: 0.08 }}
+              pathLength={1}
+              className="constellation-thread"
+              style={{ opacity: 0.16, transitionDelay: `${(i % 12) * 60}ms` }}
             />
           ))}
         </svg>
 
-        <div className="relative space-y-12">
-          {skillGroups.map((group) => (
+        {skills.map((skill, i) => {
+          const col = categoryColor[skill.category];
+          const size = dotPx(skill.level);
+          return (
+            <div
+              key={skill.name}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: `${skill.x}%`, top: `${skill.y}%` }}
+            >
+              <button
+                type="button"
+                tabIndex={-1}
+                data-skill-star
+                ref={(node) => {
+                  if (node) starsRef.current[i] = node;
+                }}
+                className="glow-chip flex items-center gap-2.5 whitespace-nowrap rounded-full border bg-abyss/30 px-4 py-2 backdrop-blur-[2px] will-change-transform"
+                style={{
+                  borderColor: `rgba(${rgb(col)}, 0.22)`,
+                  color: "#d7ece0",
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  className="inline-block shrink-0 rounded-full"
+                  style={{
+                    width: size,
+                    height: size,
+                    background: col,
+                    boxShadow: `0 0 ${size + 4}px ${Math.round(size / 3)}px rgba(${rgb(col)}, ${
+                      skill.level === 3 ? 0.7 : 0.4
+                    })`,
+                  }}
+                />
+                <span className={skill.level === 3 ? "text-[15px] font-500" : "text-[13px]"}>{skill.name}</span>
+              </button>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Mobile: a clean, proficiency-lit grouped list ──────────────────── */}
+      <div className="space-y-9 md:hidden">
+        {skillGroups.map((group) => {
+          const col = categoryColor[group.label];
+          return (
             <div key={group.label}>
-              <h3 className="mb-5 text-sm uppercase tracking-[0.3em] text-mist">{group.label}</h3>
-              <ul className="flex flex-wrap gap-3">
-                {group.skills.map((skill) => {
-                  const i = chipCursor++;
-                  return (
-                    <li
-                      key={skill}
-                      ref={(node) => {
-                        if (node) chipsRef.current[i] = node;
+              <h3 className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-mist">
+                <span
+                  className="inline-block h-2 w-2 rounded-full"
+                  style={{ background: col, boxShadow: `0 0 8px 1px rgba(${rgb(col)}, 0.6)` }}
+                />
+                {group.label}
+              </h3>
+              <ul className="flex flex-wrap gap-2.5">
+                {group.skills.map((skill) => (
+                  <li
+                    key={skill.name}
+                    data-skill-star
+                    className="flex items-center gap-2 rounded-full border border-moss bg-abyss/30 px-4 py-2 text-sm text-spore"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="inline-block rounded-full"
+                      style={{
+                        width: dotPx(skill.level),
+                        height: dotPx(skill.level),
+                        background: col,
+                        boxShadow:
+                          skill.level === 3 ? `0 0 8px 1px rgba(${rgb(col)}, 0.6)` : undefined,
                       }}
-                      data-skill-chip
-                      className="glow-chip rounded-full border border-moss px-5 py-2.5 text-sm text-spore will-change-transform"
-                    >
-                      {skill}
-                    </li>
-                  );
-                })}
+                    />
+                    {skill.name}
+                  </li>
+                ))}
               </ul>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
     </section>
   );
