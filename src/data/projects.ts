@@ -8,6 +8,14 @@ export type Project = {
   highlights: string[];
   tech: string[];
   github: string;
+  /** Live demo / deployed URL, if one exists. Renders a "Live" button. */
+  liveUrl?: string;
+  /**
+   * Hero visual for the project. Drop a file at /public/projects/<id>.png|.webm
+   * and point `src` at it. When unset, ProjectVisual renders a designed
+   * placeholder mockup so the panel never looks empty.
+   */
+  media?: { type: "image" | "video"; src: string; width?: number; height?: number };
   /** Emissive tint of this project's mushroom clearing in the 3D scene */
   tint: string;
   badge?: string;
@@ -29,7 +37,8 @@ export const projects: Project[] = [
     ],
     tech: ["React", "TypeScript", "Express", "PostgreSQL", "Drizzle", "Docker", "Tailwind"],
     github: "https://github.com/Abdullah73k/Rentra",
-    tint: "#3fdc77",
+    media: { type: "image", src: "/projects/rentra.png", width: 2558, height: 1102 },
+    tint: "#3fdc77", // forest green — home base
     badge: "Open source",
   },
   {
@@ -47,7 +56,8 @@ export const projects: Project[] = [
     ],
     tech: ["TypeScript", "Bun", "ElysiaJS", "React", "PostgreSQL", "DeepSeek", "Discord.js"],
     github: "https://github.com/Nucleon2/EthosAI",
-    tint: "#7dffb0",
+    media: { type: "image", src: "/projects/ethosai.png", width: 1580, height: 911 },
+    tint: "#22d3ee", // cyan — on-chain / blockchain
     badge: "AI × Blockchain",
   },
   {
@@ -65,7 +75,8 @@ export const projects: Project[] = [
     ],
     tech: ["Next.js", "TypeScript", "Solana Web3.js", "Claude", "Jupiter", "Tailwind"],
     github: "https://github.com/Nucleon2/AI-hackfest-AI-agent-wallet",
-    tint: "#b8ffd9",
+    media: { type: "image", src: "/projects/solace.png", width: 2554, height: 1266 },
+    tint: "#9945ff", // Solana purple
     badge: "MLH AI Hackfest",
   },
   {
@@ -83,7 +94,8 @@ export const projects: Project[] = [
     ],
     tech: ["React", "TypeScript", "Three.js", "R3F", "FastAPI", "Python", "DeepSeek"],
     github: "https://github.com/Nucleon2/EcoSim-GenAI-hackathon",
-    tint: "#4ade80",
+    media: { type: "image", src: "/projects/ecosim.png", width: 1909, height: 904 },
+    tint: "#fbbf24", // sunrise amber — climate
     badge: "GenAI Hackathon",
   },
   {
@@ -101,7 +113,8 @@ export const projects: Project[] = [
     ],
     tech: ["Python", "XGBoost", "scikit-learn", "Pandas", "NumPy", "Matplotlib"],
     github: "https://github.com/Nucleon2/wallet-scam-detector-ML",
-    tint: "#a3e635",
+    media: { type: "image", src: "/projects/wallet-risk.png", width: 640, height: 480 },
+    tint: "#f43f5e", // rose — risk / danger
     badge: "Machine Learning",
   },
 ];

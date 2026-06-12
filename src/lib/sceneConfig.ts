@@ -79,3 +79,54 @@ export const ABYSS = "#04100a";
 export const BIO = "#3fdc77";
 export const BIO_BRIGHT = "#7dffb0";
 export const SPORE = "#b8ffd9";
+
+export const ABYSS_COLOR = new THREE.Color(ABYSS);
+const BIO_COLOR = new THREE.Color(BIO);
+
+/**
+ * Accent color over the journey — the forest stays green, but the *light*
+ * shifts per project so the five clearings read as five distinct "rooms".
+ * Outside the projects band the accent rests on the house green; inside it,
+ * it peaks on each project's tint at the center of that beat and crossfades
+ * between rooms. Stops are [globalProgress, color].
+ */
+// Mirror of the projects range in sections.ts (kept local to avoid a DOM import).
+const PROJECTS_BAND: [number, number] = [0.32, 0.78];
+
+type ColorStop = [number, THREE.Color];
+const ACCENT_STOPS: ColorStop[] = (() => {
+  const [start, end] = PROJECTS_BAND;
+  const span = (end - start) / CLEARINGS.length;
+  const stops: ColorStop[] = [
+    [0, BIO_COLOR],
+    [start, BIO_COLOR],
+  ];
+  CLEARINGS.forEach((clearing, i) => {
+    stops.push([start + span * (i + 0.5), clearing.tint]);
+  });
+  stops.push([end, BIO_COLOR], [1, BIO_COLOR]);
+  return stops;
+})();
+
+/** Shared, frame-mutated accent. Read by reference in useFrame loops — never
+ *  reassigned, so no React re-renders and no per-frame allocation. */
+export const SCENE_ACCENT = new THREE.Color(BIO);
+
+/** Cursor position in NDC (-1..1) + an energy that ramps on movement and decays
+ *  when idle. Lets particle shaders scatter away from the pointer without the
+ *  scatter sticking to screen-center when the mouse is still. Shared scene-wide. */
+export const POINTER = { x: 0, y: 0, energy: 0 };
+
+/** Write the accent for a given global progress into `out`. */
+export function sampleAccent(t: number, out: THREE.Color): THREE.Color {
+  if (t <= ACCENT_STOPS[0][0]) return out.copy(ACCENT_STOPS[0][1]);
+  for (let i = 0; i < ACCENT_STOPS.length - 1; i++) {
+    const [t0, c0] = ACCENT_STOPS[i];
+    const [t1, c1] = ACCENT_STOPS[i + 1];
+    if (t >= t0 && t <= t1) {
+      const k = THREE.MathUtils.smoothstep(t, t0, t1);
+      return out.copy(c0).lerp(c1, k);
+    }
+  }
+  return out.copy(ACCENT_STOPS[ACCENT_STOPS.length - 1][1]);
+}

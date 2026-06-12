@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { firefliesVertex, firefliesFragment } from "../shaders/fireflies";
-import { mulberry32, sampleKeyframes, SPORE } from "@/lib/sceneConfig";
+import { mulberry32, sampleKeyframes, POINTER, SPORE } from "@/lib/sceneConfig";
 import { useAppStore } from "@/lib/store";
 import { useReducedMotion } from "@/lib/useReducedMotion";
 
@@ -54,6 +54,9 @@ export function Spores() {
       uPixelRatio: { value: 1 },
       uColor: { value: new THREE.Color(SPORE).multiplyScalar(0.55) },
       uIntensity: { value: 0.5 },
+      uPointer: { value: new THREE.Vector2(0, 0) },
+      uPointerStrength: { value: 0 },
+      uVelocity: { value: 0 },
     }),
     [],
   );
@@ -65,6 +68,8 @@ export function Spores() {
     mat.uniforms.uPixelRatio.value = state.gl.getPixelRatio();
     const { progress, quality } = useAppStore.getState();
     mat.uniforms.uIntensity.value = sampleKeyframes(INTENSITY_FRAMES, progress);
+    (mat.uniforms.uPointer.value as THREE.Vector2).set(POINTER.x, POINTER.y);
+    mat.uniforms.uPointerStrength.value = POINTER.energy * 0.6;
     const visible = Math.floor(BASE_COUNT * QUALITY_FACTOR[quality]);
     if (geometry.drawRange.count !== visible) geometry.setDrawRange(0, visible);
   });

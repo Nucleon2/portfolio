@@ -4,23 +4,25 @@ export function Hero() {
   return (
     <section
       id="hero"
+      data-testid="hero"
       className="relative flex min-h-screen flex-col items-center justify-center px-6 text-center"
     >
       <p
         data-hero-kicker
-        className="mb-6 text-xs uppercase tracking-[0.5em] text-mist sm:text-sm"
+        className="text-haloed mb-6 text-xs uppercase tracking-[0.5em] text-mist sm:text-sm"
       >
         {profile.tagline} — {profile.location}
       </p>
       <h1
         data-hero-title
+        data-testid="hero-title"
         className="font-display text-[13vw] font-800 leading-[0.95] tracking-tight text-spore uppercase sm:text-[10vw]"
       >
         <span className="block">{profile.firstName}</span>
         <span className="glow-text block text-bio">{profile.lastName}</span>
       </h1>
-      <p data-hero-sub className="mt-8 max-w-md text-sm text-mist sm:text-base">
-        Building full-stack and AI-powered products from the ground up.
+      <p data-hero-sub className="text-haloed mt-8 max-w-md text-sm text-spore/80 sm:text-base">
+        I build full-stack and AI products from the ground up — and ship them.
       </p>
 
       <div

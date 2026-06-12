@@ -42,3 +42,8 @@ next-env.d.ts
 
 desktop.ini
 .playwright-mcp/
+
+# playwright
+/test-results
+/playwright-report
+/playwright/.cache

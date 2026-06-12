@@ -9,6 +9,10 @@
   --color-spore: #b8ffd9;
   --color-mist: #9db8a8;
 
+  /* Warm secondary accent — used sparingly (résumé, key hovers) so two
+     colors read as "designed" rather than one green filter. */
+  --color-ember: #f5c451;
+
   --font-display: var(--font-unbounded);
   --font-body: var(--font-space-grotesk);
 }
@@ -116,4 +120,56 @@ html.has-cursor * {
   box-shadow:
     0 0 14px rgba(63, 220, 119, 0.35),
     inset 0 0 10px rgba(63, 220, 119, 0.12);
+}
+
+/* Readability: a soft localized scrim that darkens the bright forest ONLY
+   behind a text column, so body copy stays legible without a hard box that
+   would kill the immersion. The ellipse is blurred and sits at z-index:-1
+   within the element's own (z-10) stacking context — above the canvas, below
+   the words. Pair with .text-haloed for per-glyph contrast. */
+.text-scrim {
+  position: relative;
+}
+.text-scrim::before {
+  content: "";
+  position: absolute;
+  inset: -2.5rem -3.5rem;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 75% 65% at 38% 50%,
+    rgba(4, 16, 10, 0.82),
+    rgba(4, 16, 10, 0.5) 45%,
+    transparent 72%
+  );
+  filter: blur(22px);
+}
+
+/* Each glyph carries its own contrast halo — cheap, surprisingly effective
+   over the animated scene. */
+.text-haloed {
+  text-shadow:
+    0 1px 12px var(--color-abyss),
+    0 0 24px rgba(4, 16, 10, 0.65);
+}
+
+/* Link underline that draws in from the left on hover. */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
 }

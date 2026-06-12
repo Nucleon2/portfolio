@@ -2,6 +2,9 @@ export const firefliesVertex = /* glsl */ `
   uniform float uTime;
   uniform float uSize;
   uniform float uPixelRatio;
+  uniform vec2 uPointer;          // cursor in NDC (-1..1)
+  uniform float uPointerStrength; // 0 when idle, ramps on movement
+  uniform float uVelocity;        // scroll velocity feedback (0..~1)
 
   attribute vec3 aSeed;     // per-point random in [0,1)^3
   attribute float aScale;
@@ -20,8 +23,17 @@ export const firefliesVertex = /* glsl */ `
     vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
     gl_Position = projectionMatrix * mvPosition;
 
+    // Touch the world: push nearby motes away from the cursor in screen space.
+    if (uPointerStrength > 0.001) {
+      vec2 screen = gl_Position.xy / gl_Position.w;
+      vec2 toP = screen - uPointer;
+      float fall = exp(-dot(toP, toP) * 6.0);
+      gl_Position.xy += normalize(toP + 1e-4) * fall * uPointerStrength * 0.12 * gl_Position.w;
+    }
+
     gl_PointSize = uSize * aScale * uPixelRatio;
     gl_PointSize *= (1.0 / -mvPosition.z);
+    gl_PointSize *= (1.0 + uVelocity * 0.6); // streak/brighten on fast scroll
 
     // Hash-based flicker, each firefly on its own rhythm.
     vFlicker = 0.45 + 0.55 * sin(uTime * (1.5 + aSeed.y * 3.0) + aSeed.x * 100.0);

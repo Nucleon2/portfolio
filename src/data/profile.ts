@@ -2,7 +2,7 @@ export const profile = {
   name: "Ahmad Khamis",
   firstName: "Ahmad",
   lastName: "Khamis",
-  tagline: "Software developer & AI tinkerer",
+  tagline: "Full-stack & AI developer",
   location: "Abu Dhabi, UAE",
   email: "ahmadkhamis008@gmail.com",
   phone: "0585499334",
@@ -30,11 +30,9 @@ export const experience = [
     location: "Abu Dhabi, UAE",
     period: "Dec 2025 — Jan 2026",
     bullets: [
-      "Worked in an open innovation environment focused on rapid experimentation and evaluation of emerging AI technologies.",
-      "Gained hands-on exposure to machine learning concepts including neural networks, embeddings, and model evaluation pipelines.",
-      "Explored and implemented Retrieval-Augmented Generation (RAG) using vector databases and semantic search to improve LLM context relevance.",
-      "Analyzed AI use cases by translating business problems into technical prototypes and feasibility assessments.",
-      "Developed understanding of the end-to-end ML lifecycle — data preprocessing, training, inference, and deployment.",
+      "Built Retrieval-Augmented Generation pipelines with vector databases and semantic search to sharpen LLM context relevance.",
+      "Turned ambiguous business problems into working prototypes and feasibility calls for emerging AI use cases.",
+      "Worked end-to-end across the ML lifecycle — data prep, training, inference and deployment — inside a fast experimentation team.",
     ],
   },
 ] as const;

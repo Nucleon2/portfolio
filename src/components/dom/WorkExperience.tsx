@@ -4,6 +4,7 @@ export function WorkExperience() {
   return (
     <section
       id="experience"
+      data-testid="section-experience"
       className="relative mx-auto flex min-h-screen max-w-4xl flex-col justify-center px-6 py-32"
     >
       <h2 className="font-display mb-14 text-xs font-400 uppercase tracking-[0.5em] text-bio">
@@ -17,7 +18,7 @@ export function WorkExperience() {
             style={{ height: "100%" }}
             aria-hidden="true"
           />
-          <header className="mb-8">
+          <header className="text-haloed mb-8">
             <h3 className="font-display text-2xl font-600 text-spore sm:text-4xl">
               {job.company}
             </h3>
