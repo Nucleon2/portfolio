@@ -80,6 +80,7 @@ export function Preloader() {
       ref={overlayRef}
       role="status"
       aria-label="Loading"
+      data-testid="preloader"
       className="bg-abyss fixed inset-0 z-50 flex items-center justify-center"
       style={{ clipPath: "inset(0% 0% 0% 0%)" }}
     >

@@ -11,6 +11,7 @@ export function Nav() {
     <header className="pointer-events-none fixed inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-5 sm:px-10">
       <a
         href="#hero"
+        data-testid="nav-logo"
         className="font-display pointer-events-auto text-lg font-800 tracking-tight text-spore transition-colors hover:text-bio"
         aria-label="Back to top"
       >
@@ -22,6 +23,7 @@ export function Nav() {
           href={profile.resumeUrl}
           target="_blank"
           rel="noopener noreferrer"
+          data-testid="nav-resume"
           data-cursor-label="↗"
           className="pointer-events-auto flex min-h-[40px] items-center rounded-full border border-ember/40 px-3.5 text-[10px] uppercase tracking-[0.2em] text-ember transition-colors duration-300 hover:bg-ember hover:text-abyss sm:text-[11px]"
         >
@@ -36,7 +38,7 @@ export function Nav() {
           {sections[sectionIndex]?.label}
         </span>
 
-        <nav aria-label="Sections" className="pointer-events-auto">
+        <nav aria-label="Sections" data-testid="section-nav" className="pointer-events-auto">
           <ul className="flex items-center gap-1 sm:gap-2">
             {sections.map((section, i) => (
               <li key={section.id}>
@@ -44,6 +46,8 @@ export function Nav() {
                   href={`#${section.id}`}
                   aria-label={section.label}
                   aria-current={i === sectionIndex ? "true" : undefined}
+                  data-testid="nav-link"
+                  data-section={section.id}
                   className="group flex min-h-[44px] items-center gap-2 px-1.5"
                 >
                   <span

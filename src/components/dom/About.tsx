@@ -5,6 +5,7 @@ export function About() {
   return (
     <section
       id="about"
+      data-testid="section-about"
       className="relative mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-6 py-32"
     >
       <h2 className="font-display mb-10 text-xs font-400 uppercase tracking-[0.5em] text-bio">

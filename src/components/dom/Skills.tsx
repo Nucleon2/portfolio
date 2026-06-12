@@ -129,6 +129,7 @@ export function Skills() {
   return (
     <section
       id="skills"
+      data-testid="section-skills"
       className="relative mx-auto flex min-h-screen max-w-4xl flex-col justify-center px-6 py-32"
     >
       <h2 className="font-display mb-3 text-xs font-400 uppercase tracking-[0.5em] text-bio">

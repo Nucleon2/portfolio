@@ -9,6 +9,7 @@ export function Contact() {
   return (
     <section
       id="contact"
+      data-testid="section-contact"
       className="relative flex min-h-screen flex-col items-center justify-center px-6 py-32 text-center"
     >
       <h2
@@ -26,6 +27,7 @@ export function Contact() {
         <a
           href={`mailto:${profile.email}`}
           data-magnetic
+          data-testid="contact-email"
           onClick={() => pulseCta()}
           className="rounded-full bg-bio px-8 py-4 text-sm font-medium uppercase tracking-[0.2em] text-abyss transition-shadow duration-300 hover:shadow-[0_0_30px_rgba(63,220,119,0.5)]"
         >
@@ -36,6 +38,7 @@ export function Contact() {
           target="_blank"
           rel="noopener noreferrer"
           data-magnetic
+          data-testid="contact-resume"
           className="rounded-full border border-ember/50 px-8 py-4 text-sm uppercase tracking-[0.2em] text-ember transition-colors duration-300 hover:bg-ember hover:text-abyss"
         >
           Resume ↓
@@ -48,6 +51,7 @@ export function Contact() {
             href={profile.github}
             target="_blank"
             rel="noopener noreferrer"
+            data-testid="contact-github"
             className="link-underline inline-block py-2 transition-colors hover:text-bio-bright"
           >
             GitHub — {profile.githubHandle}
@@ -58,6 +62,7 @@ export function Contact() {
             href={profile.linkedin}
             target="_blank"
             rel="noopener noreferrer"
+            data-testid="contact-linkedin"
             className="link-underline inline-block py-2 transition-colors hover:text-bio-bright"
           >
             LinkedIn — {profile.linkedinHandle}

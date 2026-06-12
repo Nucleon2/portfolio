@@ -10,6 +10,7 @@ export function ProjectPanel({ project }: { project: Project }) {
     <article
       id={`project-${project.id}`}
       data-project={project.id}
+      data-testid="project-panel"
       className="relative flex min-h-screen items-center px-6 py-24 sm:px-12"
     >
       <span
@@ -33,6 +34,7 @@ export function ProjectPanel({ project }: { project: Project }) {
           )}
           <h3
             data-project-title
+            data-testid="project-title"
             className="font-display text-5xl font-600 uppercase leading-none tracking-tight text-spore sm:text-7xl"
           >
             {project.name}
@@ -75,6 +77,7 @@ export function ProjectPanel({ project }: { project: Project }) {
                 rel="noopener noreferrer"
                 data-magnetic
                 data-cursor-label="↗"
+                data-testid="project-live"
                 className="group inline-flex items-center gap-3 rounded-full bg-bio px-7 py-3 text-sm uppercase tracking-[0.2em] text-abyss transition-shadow duration-300 hover:shadow-[0_0_30px_rgba(63,220,119,0.5)]"
               >
                 Live
@@ -89,6 +92,7 @@ export function ProjectPanel({ project }: { project: Project }) {
               rel="noopener noreferrer"
               data-magnetic
               data-cursor-label="↗"
+              data-testid="project-source"
               className="group inline-flex items-center gap-3 rounded-full border border-bio/50 px-7 py-3 text-sm uppercase tracking-[0.2em] text-bio transition-colors duration-300 hover:bg-bio hover:text-abyss"
             >
               View source

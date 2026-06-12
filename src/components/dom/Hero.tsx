@@ -4,6 +4,7 @@ export function Hero() {
   return (
     <section
       id="hero"
+      data-testid="hero"
       className="relative flex min-h-screen flex-col items-center justify-center px-6 text-center"
     >
       <p
@@ -14,6 +15,7 @@ export function Hero() {
       </p>
       <h1
         data-hero-title
+        data-testid="hero-title"
         className="font-display text-[13vw] font-800 leading-[0.95] tracking-tight text-spore uppercase sm:text-[10vw]"
       >
         <span className="block">{profile.firstName}</span>
